@@ -1,0 +1,69 @@
+#!/usr/bin/php -q
+<?php
+
+define('SERVER_HOST', 'http://testbed.localhost');
+define('PATH_TO_REST', '/rest.php');
+
+if (in_array('--help', $argv))
+{
+	echo PHP_EOL;
+	echo 'Syntax: /path/to/php /path/to/cli --month 10 --year 2014', PHP_EOL;
+	echo PHP_EOL;
+	echo 'Required Fields are:', PHP_EOL;
+	echo "\t--month (Month)", PHP_EOL;
+	echo "\t--year (Year)", PHP_EOL;
+	echo PHP_EOL;
+	echo 'Optional Field(s) are:', PHP_EOL;
+	echo "\t--date-format (Date Format - php.net/date) Default: Y-m-d", PHP_EOL;
+	echo "\tNote: wrap this value in quotes. eg. --date-format \"jS F Y\"", PHP_EOL;
+	exit;
+}
+
+// set the lib/ folder in the include path
+set_include_path('./lib' . PATH_SEPARATOR . get_include_path());
+
+// enables us to auto load library files
+function __autoload($class_name) {
+   	include str_replace('_', '/', $class_name) . '.php';
+}
+
+// Define Required Fields
+$month = NULL;
+$year = NULL;
+if (in_array('--month', $argv))
+{
+    $index = array_search('--month', $argv);
+    $month = $argv[$index+1];
+}
+if (in_array('--year', $argv))
+{
+    $index = array_search('--year', $argv);
+    $year = $argv[$index+1];
+}
+
+if (!$month || !$year)
+{
+	echo 'Month or Year is not valid';
+	exit;
+}
+
+// Optionally Date Format is available
+$dateFormat = 'Y-m-d';
+if (in_array('--date-format', $argv))
+{
+	$index = array_search('--date-format', $argv);
+	$dateFormat = $argv[$index+1];
+}
+
+$client = new Zend_Rest_Client(SERVER_HOST . PATH_TO_REST);
+$result = $client->getdates($year, $month, $dateFormat)->get();
+echo 'You queried:', PHP_EOL, "\tMonth: $month", PHP_EOL, "\tYear: $year", PHP_EOL, PHP_EOL;
+if ($result->isSuccess())
+{
+	echo 'Process Date: ', $result->__get('result')->process_date, PHP_EOL, 'Pay Date: ', $result->__get('result')->pay_date;
+}
+else 
+{
+	echo $result->__get('response')->message;
+}
+echo PHP_EOL, PHP_EOL;

@@ -1,0 +1,33 @@
+
+############
+## SET UP ##
+############
+
+Modify hosts file adding a new line
+127.0.0.1	testbed.localhost
+
+Add VirtualHost block in apache's http-vhosts.conf (assuming vhosts have already been enabled in your apache config)
+Change the DocumentRoot value to suit your needs
+<VirtualHost *:80>
+    DocumentRoot "C:\Users\Mark\Zend\workspaces\DefaultWorkspace7.1\test"
+    ServerName testbed.localhost
+    ErrorLog "logs/testbed-error.log"
+    CustomLog "logs/testbed-access.log" common
+</VirtualHost>
+
+Download the latest Zend Framework v1 and add the contents of the library folder into the application lib folder.
+
+Open the command prompt and navigate to the containing directory. For syntax help enter the following:
+	/path/to/php cli --help
+
+Usage:
+	/path/to/php cli --month 2 --year 2014
+
+Files:
+¦   cli
+¦   Payday.php
+¦   PaydayTest.php
+¦   rest.php
+¦   SETUP.txt
+¦
++---lib
