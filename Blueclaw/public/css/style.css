@@ -1,0 +1,10 @@
+@CHARSET "ISO-8859-1";
+#flashMessenger.error {
+	border: 1px solid #F00;
+	background-color: #F98989;
+}
+
+#flashMessenger.confirm {
+	border: 1px solid #61FF00;
+	background-color: #B4F989;
+}
